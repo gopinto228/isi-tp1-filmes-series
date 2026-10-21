@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: isi_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: isi
+      POSTGRES_PASSWORD: isi1234
+      POSTGRES_DB: filmes_series
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: isi_grafana
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin1234
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafanadata:/var/lib/grafana
+
+volumes:
+  pgdata:
+  grafanadata:
